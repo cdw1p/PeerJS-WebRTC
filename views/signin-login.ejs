@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<meta http-equiv="content-type" content="text/htmlcharset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <meta charset="utf-8">
+    <link href="/assets/images/favicon.ico" rel="shortcut icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Login - PT. Pelabuhan Indonesia III">
+    <meta name="author" content="PELINDO III">
+    <title>Login - PT. Pelabuhan Indonesia III</title>
+
+    <!-- BEGIN: CSS Assets-->
+    <link rel="stylesheet" href="/assets/css/login.css"/>
+    <link rel="stylesheet" href="/assets/css/normalize.css"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <!-- END: CSS Assets-->
+</head>
+<body>
+    <div class="login-wrapper">
+        <form action="" method="POST" autocomplete="off">
+            <h1>VoIP-Server Auth</h1>
+
+            <% if (error) { %>
+                <span>Silahkan coba lagi!</span>
+            <% } %>
+
+            <div class="input-row">
+                <span class="icon"><i class="fa fa-user"></i></span>
+                <input type="text" id="fullname" name="fullname" placeholder="Nama Lengkap"/>
+            </div>
+            <div class="input-row">
+                <span class="icon"><i class="fa fa-server"></i></span>
+                <input type="text" id="room" name="room" placeholder="Nama Room"/>
+            </div>
+            <!-- <div class="input-row">
+                <span class="icon"><i class="fa fa-lock"></i></span>
+                <input type="password" placeholder="Password"/>
+            </div> -->
+            <div class="submit-row">
+                <input type="submit" value="Submit &raquo;"/>
+                <span class="reset">© 2020 by cdw1</span>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
