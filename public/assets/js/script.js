@@ -1,27 +1,30 @@
-const peers = {}
-const socket = io('/')
-const videoGrid = document.getElementById('video-grid')
-const myVideo = document.createElement('video')
+var peers = {}
+var socket = io('/')
+var context = new (window.AudioContext || window.webkitAudioContext)()
+var filter, compressor, mediaStreamSource
+var videoGrid = document.getElementById('video-grid')
+var myVideo = document.createElement('video')
 myVideo.muted = true
+myVideo.volume = 0
 
-navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then(stream => {
+navigator.mediaDevices.getUserMedia({ video: false, audio: true }, initAudio).then(stream => {
   addVideoStream(myVideo, stream)
 
   myPeer.on('call', call => {
     call.answer(stream)
     const video = document.createElement('video')
-    call.on('stream', userVideoStream => {
-      addVideoStream(video, userVideoStream)
-    })
+    call.on('stream', userVideoStream => { addVideoStream(video, userVideoStream) })
   })
 
   socket.on('user-connected', userData => {
     connectToNewUser(userData.id, stream)
     connectToListOnline(userData.data)
+    socket.emit('online-user', ROOM_ID)
   })
 
   socket.on('user-disconnected', userData => {
     connectToListOnline(userData.data)
+    socket.emit('online-user', ROOM_ID)
     if (peers[userData.id]) peers[userData.id].close()
   })
 })
@@ -60,8 +63,30 @@ function addVideoStream(video, stream) {
   videoGrid.append(video)
 }
 
+function initAudio(stream) {
+  compressor = context.createDynamicsCompressor()
+  compressor.threshold.value = -50
+  compressor.knee.value = 40
+  compressor.ratio.value = 12
+  compressor.reduction.value = -20
+  compressor.attack.value = 0
+  compressor.release.value = 0.25
+
+  filter = context.createBiquadFilter()
+  filter.Q.value = 8.30
+  filter.frequency.value = 355
+  filter.gain.value = 3.0
+  filter.type = 'bandpass'
+  filter.connect(compressor)
+
+  compressor.connect(context.destination)
+  filter.connect(context.destination)
+
+  mediaStreamSource = context.createMediaStreamSource(stream)
+  mediaStreamSource.connect(filter)
+}
+
 const myPeer = new Peer(undefined, { host: '/', port: '9000', secure: true })
 myPeer.on('open', id => {
   socket.emit('join-room', ROOM_ID, USER_ID, USER_NAME, id)
-  setInterval(() => { socket.emit('online-user', ROOM_ID) }, 1000*3)
 })
