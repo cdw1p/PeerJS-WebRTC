@@ -1,5 +1,4 @@
 const { v4: uuidV4 } = require('uuid')
-const { CustomMessage } = require('../helpers/customMessage')
 const { FunctionSQLRawPrevent } = require('../helpers/sqlRawPrevent')
 
 // Global Variable
@@ -9,18 +8,17 @@ class signinController {
   constructor(req, res) {
     this.req = req
     this.res = res
-    this.msg = new CustomMessage(res)
   }
 
   // Get Index
   async Index() {
-    const { req, res, msg } = this
+    const { req, res } = this
     return res.render('signin-login', { error: false })
   }
 
   // Post Login
   async IndexPOST() {
-    const { req, res, msg } = this
+    const { req, res } = this
     var reqUserName = await FunctionSQLRawPrevent(req.body.fullname.replace(/ /g, ''))
     var reqRoomName = await FunctionSQLRawPrevent(req.body.room.replace(/ /g, ''))
 
